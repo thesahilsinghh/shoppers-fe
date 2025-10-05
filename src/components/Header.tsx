@@ -1,11 +1,16 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { ShoppingBag, Search, User, Menu } from "lucide-react";
 import { useCart } from "../contexts/CartContext";
 
 const Header: React.FC = () => {
   const location = useLocation();
-  const { state } = useCart();
+  const { totalItems, fetchCart } = useCart(); // ✅ now using fetchCart from context
+
+  // ✅ Make sure the header badge refreshes when page loads
+  useEffect(() => {
+    fetchCart();
+  }, [fetchCart]);
 
   const isActive = (path: string) => {
     return location.pathname === path;
@@ -86,9 +91,9 @@ const Header: React.FC = () => {
             <Link to="/checkout">
               <button className="btn btn-ghost btn-sm text-gray-700 hover:text-gray-900 hover:bg-gray-100 transition-all duration-200 relative">
                 <ShoppingBag className="h-5 w-5" />
-                {state.totalItems > 0 && (
+                {totalItems > 0 && (
                   <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center font-medium">
-                    {state.totalItems > 99 ? "99+" : state.totalItems}
+                    {totalItems > 99 ? "99+" : totalItems}
                   </span>
                 )}
               </button>
