@@ -3,8 +3,8 @@ import React, {
   useContext,
   useReducer,
   useEffect,
-  ReactNode,
 } from "react";
+import type {ReactNode} from 'react';
 import type { CartItem, Product } from "../types";
 import { getCartFromStorage, saveCartToStorage } from "../data/staticData";
 
