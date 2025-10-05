@@ -1,12 +1,20 @@
 
+import { Routes,Route } from 'react-router-dom'
 import './App.css'
+import Login from './pages/authPages/Login'
+import Signup from './pages/authPages/Signup'
+// import { Route } from 'lucide-react'
 
 function App() {
 
   return (
-    <div className='h-screen w-screen'>
-      <h1 className='text-5xl font-bold underline'>Working</h1>
-      <button className="btn btn-primary">Button</button>
+    <div className="min-h-screen  flex flex-row items-center justify-center bg-base-200 relative ">
+      <Routes>
+        <Route path='/signup' element={<Signup/>}/>
+        <Route path='/login' element={<Login/>}/>
+        
+        
+      </Routes>
     </div>
   )
 }
