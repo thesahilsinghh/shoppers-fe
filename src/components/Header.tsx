@@ -29,7 +29,7 @@ const Header: React.FC = () => {
           </div>
 
           {/* Logo */}
-          <div className="flex-1 lg:relative fixed flex w-full left-0 items-center justify-center lg:justify-start h-full">
+          <div className="flex-1 lg:relative fixed flex w-full left-0 items-center justify-center lg:justify-start">
             <Link to="/" className="flex items-center h-full">
               <div className="flex items-center space-x-2">
                 <div className="w-8 h-8 bg-headerText rounded-md flex items-center justify-center">

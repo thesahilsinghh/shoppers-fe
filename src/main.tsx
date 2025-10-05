@@ -1,20 +1,15 @@
-import { createRoot } from 'react-dom/client'
-import './index.css'
-import App from './App.tsx'
-import { BrowserRouter } from 'react-router-dom'
-import { ApolloProvider } from '@apollo/client/react'
-import { ApolloClient,HttpLink,InMemoryCache,gql } from '@apollo/client'
+import { createRoot } from "react-dom/client";
+import "./index.css";
+import App from "./App.tsx";
+import { BrowserRouter } from "react-router-dom";
 
-// const client = new ApolloClient({
-//   uri:"http://localhost:3000/graphql/",
-//   cache:new InMemoryCachen(),
-//   credintials:"includes"
-// })
+import { ApolloProvider } from "@apollo/client/react";
+import client from "./ApolloClient.ts";
 
-createRoot(document.getElementById('root')!).render(
-  <BrowserRouter>
-    {/* <ApolloProvider> */}
+createRoot(document.getElementById("root")!).render(
+  <ApolloProvider client={client}>
+    <BrowserRouter>
       <App />
-    {/* </ApolloProvider> */}
-  </BrowserRouter>,
-)
+    </BrowserRouter>
+  </ApolloProvider>
+);

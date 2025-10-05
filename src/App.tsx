@@ -7,20 +7,32 @@ import CheckoutPage from "./pages/CheckoutPage";
 import OrderConfirmPage from "./pages/OrderConfirmPage";
 import OrdersPage from "./pages/OrdersPage";
 import { CartProvider } from "./contexts/CartContext";
-// import { Route } from 'lucide-react'
+import { OrderContextProvider } from "./contexts/OrderContext";
 
 function App() {
   return (
     <CartProvider>
-      <div className="min-h-screen items-center justify-center bg-base-200 relative ">
+      <div className="min-h-screen items-center justify-center bg-base-200 relative">
         <Header />
         <Routes>
+          {/* Public Routes */}
           <Route path="/signup" element={<Signup />} />
           <Route path="/login" element={<Login />} />
           <Route path="/" element={<HomePage />} />
-          <Route path="/checkout" element={<CheckoutPage />} />
-          <Route path="/order-confirm" element={<OrderConfirmPage />} />
-          <Route path="/orders" element={<OrdersPage />} />
+
+          {/* Order-related Routes (with context) */}
+          <Route
+            path="/*"
+            element={
+              <OrderContextProvider>
+                <Routes>
+                  <Route path="/checkout" element={<CheckoutPage />} />
+                  <Route path="/order-confirm" element={<OrderConfirmPage />} />
+                  <Route path="/orders" element={<OrdersPage />} />
+                </Routes>
+              </OrderContextProvider>
+            }
+          />
         </Routes>
       </div>
     </CartProvider>
