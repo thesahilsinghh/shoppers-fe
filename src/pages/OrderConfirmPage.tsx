@@ -10,6 +10,7 @@ import {
   saveAddressToStorage,
 } from "../data/staticData";
 import { OrderItemCard } from "../components/ProductCard";
+import { Button } from "../components/ui/Button";
 
 const OrderConfirmPage: React.FC = () => {
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
@@ -87,7 +88,7 @@ const OrderConfirmPage: React.FC = () => {
 
   if (orderPlaced && newOrder) {
     return (
-      <div className="min-h-screen bg-background">
+      <div className="bg-background">
         <div className="container mx-auto px-4 py-20">
           <div className="max-w-2xl mx-auto text-center">
             <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6">
@@ -256,10 +257,10 @@ const OrderConfirmPage: React.FC = () => {
               </div>
 
               {/* Submit Button */}
-              <button
+              <Button
                 onClick={handlePlaceOrder}
                 disabled={isProcessing}
-                className="w-full inline-flex items-center justify-center px-6 py-3 bg-primary text-primary-foreground rounded-md hover:bg-primary/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                className="w-full inline-flex items-center justify-center px-6 py-3"
               >
                 {isProcessing ? (
                   <div className="flex items-center gap-2">
@@ -272,7 +273,7 @@ const OrderConfirmPage: React.FC = () => {
                     Create Order - ${calculateTotal().toFixed(2)}
                   </div>
                 )}
-              </button>
+              </Button>
             </form>
           </div>
 

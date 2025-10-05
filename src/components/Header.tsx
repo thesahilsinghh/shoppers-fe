@@ -18,8 +18,8 @@ const Header: React.FC = () => {
   ];
 
   return (
-    <header className="sticky top-0 z-50 border-b bg-white">
-      <div className="container mx-auto px-4">
+    <header className="sticky w-full top-0 z-50 shadow-sm text-hello">
+      <div className="mx-auto px-4">
         <div className="flex items-center justify-between h-20">
           {/* Mobile menu */}
           <div className="lg:hidden">
