@@ -1,0 +1,328 @@
+import React, { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
+import { CheckCircle, CreditCard, Package, ArrowLeft } from "lucide-react";
+import type { CartItem, Order, Address } from "../types";
+import { OrderStatus } from "../types";
+import {
+  getCartFromStorage,
+  saveOrderToStorage,
+  getAddressFromStorage,
+  saveAddressToStorage,
+} from "../data/staticData";
+import { OrderItemCard } from "../components/ProductCard";
+
+const OrderConfirmPage: React.FC = () => {
+  const [cartItems, setCartItems] = useState<CartItem[]>([]);
+  const [address, setAddress] = useState<Address>(getAddressFromStorage());
+  const [isProcessing, setIsProcessing] = useState(false);
+  const [orderPlaced, setOrderPlaced] = useState(false);
+  const [newOrder, setNewOrder] = useState<Order | null>(null);
+
+  useEffect(() => {
+    setCartItems(getCartFromStorage());
+  }, []);
+
+  const calculateSubtotal = () => {
+    return cartItems.reduce(
+      (total, item) => total + item.product.price * item.quantity,
+      0
+    );
+  };
+
+  const calculateShipping = () => {
+    const subtotal = calculateSubtotal();
+    return subtotal > 100 ? 0 : 15;
+  };
+
+  const calculateTotal = () => {
+    return calculateSubtotal() + calculateShipping();
+  };
+
+  const generateOrderId = () => {
+    const timestamp = Date.now();
+    return `ORD-${timestamp}`;
+  };
+
+  const generatePaymentId = () => {
+    return `pay_${Math.random().toString(36).substr(2, 9)}`;
+  };
+
+  const handlePlaceOrder = async () => {
+    setIsProcessing(true);
+
+    // Simulate processing delay
+    await new Promise((resolve) => setTimeout(resolve, 2000));
+
+    const orderItems = cartItems.map((item) => ({
+      product_id: item.product._id,
+      quantity: item.quantity,
+      price: item.product.price,
+    }));
+
+    const order: Order = {
+      _id: Date.now().toString(),
+      user_id: "user123",
+      order_id: generateOrderId(),
+      order_items: orderItems,
+      total: calculateTotal(),
+      status: OrderStatus.CONFIRMED,
+      payment_id: generatePaymentId(),
+      shippingPrice: calculateShipping(),
+      address: address,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    };
+
+    saveOrderToStorage(order);
+    setNewOrder(order);
+    setOrderPlaced(true);
+    setIsProcessing(false);
+  };
+
+  const updateAddressField = (field: keyof Address, value: string) => {
+    const updatedAddress = { ...address, [field]: value };
+    setAddress(updatedAddress);
+    saveAddressToStorage(updatedAddress);
+  };
+
+  if (orderPlaced && newOrder) {
+    return (
+      <div className="min-h-screen bg-background">
+        <div className="container mx-auto px-4 py-20">
+          <div className="max-w-2xl mx-auto text-center">
+            <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6">
+              <CheckCircle className="w-8 h-8 text-green-600" />
+            </div>
+            <h1 className="text-3xl font-light mb-4 text-gray-900">
+              Order Complete!
+            </h1>
+            <p className="text-gray-700 mb-8">
+              Thank you for your order. We'll send you a confirmation email
+              shortly.
+            </p>
+            <div className="bg-card border rounded-lg p-4 mb-8">
+              <p className="text-lg font-semibold text-gray-900">
+                Order ID: {newOrder.order_id}
+              </p>
+            </div>
+            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+              <Link
+                to="/checkout"
+                className="inline-flex items-center px-6 py-3 bg-primary text-primary-foreground rounded-md hover:bg-primary/90 transition-colors"
+              >
+                Continue Shopping
+              </Link>
+              <Link
+                to="/"
+                className="inline-flex items-center px-6 py-3 border border-primary text-primary rounded-md hover:bg-primary hover:text-primary-foreground transition-colors"
+              >
+                Back to Home
+              </Link>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="min-h-screen bg-background">
+      <div className="container mx-auto px-4 py-8">
+        {/* Header */}
+        <div className="flex items-center gap-4 mb-8">
+          <Link
+            to="/checkout"
+            className="flex items-center gap-2 text-gray-700 hover:text-gray-900 transition-colors"
+          >
+            <ArrowLeft className="w-4 h-4" />
+            Back
+          </Link>
+          <h1 className="text-2xl font-light text-gray-900">Checkout</h1>
+        </div>
+
+        <div className="grid lg:grid-cols-2 gap-12">
+          {/* Checkout Form */}
+          <div className="space-y-8">
+            <form onSubmit={(e) => e.preventDefault()} className="space-y-8">
+              {/* Shipping Address */}
+              <div>
+                <h2 className="text-lg font-medium mb-4 text-gray-900">
+                  Shipping Address
+                </h2>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-sm font-medium mb-1 text-gray-900">
+                      Full Name
+                    </label>
+                    <input
+                      type="text"
+                      value={address.name}
+                      onChange={(e) =>
+                        updateAddressField("name", e.target.value)
+                      }
+                      className="w-full px-3 py-2 border border-input rounded-md bg-background focus:ring-2 focus:ring-ring focus:border-transparent"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium mb-1 text-gray-900">
+                      Contact
+                    </label>
+                    <input
+                      type="text"
+                      value={address.contact}
+                      onChange={(e) =>
+                        updateAddressField("contact", e.target.value)
+                      }
+                      className="w-full px-3 py-2 border border-input rounded-md bg-background focus:ring-2 focus:ring-ring focus:border-transparent"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium mb-1 text-gray-900">
+                      Flat/House
+                    </label>
+                    <input
+                      type="text"
+                      value={address.flat}
+                      onChange={(e) =>
+                        updateAddressField("flat", e.target.value)
+                      }
+                      className="w-full px-3 py-2 border border-input rounded-md bg-background focus:ring-2 focus:ring-ring focus:border-transparent"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium mb-1 text-gray-900">
+                      City
+                    </label>
+                    <input
+                      type="text"
+                      value={address.city}
+                      onChange={(e) =>
+                        updateAddressField("city", e.target.value)
+                      }
+                      className="w-full px-3 py-2 border border-input rounded-md bg-background focus:ring-2 focus:ring-ring focus:border-transparent"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium mb-1 text-gray-900">
+                      State
+                    </label>
+                    <input
+                      type="text"
+                      value={address.state}
+                      onChange={(e) =>
+                        updateAddressField("state", e.target.value)
+                      }
+                      className="w-full px-3 py-2 border border-input rounded-md bg-background focus:ring-2 focus:ring-ring focus:border-transparent"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium mb-1 text-gray-900">
+                      Pincode
+                    </label>
+                    <input
+                      type="text"
+                      value={address.pincode}
+                      onChange={(e) =>
+                        updateAddressField("pincode", e.target.value)
+                      }
+                      className="w-full px-3 py-2 border border-input rounded-md bg-background focus:ring-2 focus:ring-ring focus:border-transparent"
+                    />
+                  </div>
+                </div>
+              </div>
+
+              {/* Order Items */}
+              <div>
+                <h2 className="text-lg font-medium mb-4 text-gray-900">
+                  Order Items
+                </h2>
+                <div className="space-y-4">
+                  {cartItems.map((item) => (
+                    <OrderItemCard
+                      key={item.product._id}
+                      orderItem={{
+                        product_id: item.product._id,
+                        quantity: item.quantity,
+                        price: item.product.price,
+                      }}
+                    />
+                  ))}
+                </div>
+              </div>
+
+              {/* Submit Button */}
+              <button
+                onClick={handlePlaceOrder}
+                disabled={isProcessing}
+                className="w-full inline-flex items-center justify-center px-6 py-3 bg-primary text-primary-foreground rounded-md hover:bg-primary/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                {isProcessing ? (
+                  <div className="flex items-center gap-2">
+                    <div className="w-4 h-4 border-2 border-current border-t-transparent rounded-full animate-spin" />
+                    Creating Order...
+                  </div>
+                ) : (
+                  <div className="flex items-center gap-2">
+                    <CreditCard className="w-4 h-4" />
+                    Create Order - ${calculateTotal().toFixed(2)}
+                  </div>
+                )}
+              </button>
+            </form>
+          </div>
+
+          {/* Order Summary */}
+          <div className="lg:sticky lg:top-8 h-fit">
+            <div className="bg-muted/30 p-6 rounded-lg">
+              <h2 className="text-lg font-medium mb-4 text-gray-900">
+                Order Summary
+              </h2>
+
+              {/* Order Totals */}
+              <div className="space-y-2 mb-6">
+                <div className="flex justify-between text-sm text-gray-700">
+                  <span>Subtotal</span>
+                  <span>${calculateSubtotal().toFixed(2)}</span>
+                </div>
+                <div className="flex justify-between text-sm text-gray-700">
+                  <span>Shipping</span>
+                  <span>
+                    {calculateShipping() === 0
+                      ? "Free"
+                      : `$${calculateShipping().toFixed(2)}`}
+                  </span>
+                </div>
+                <div className="border-t pt-2">
+                  <div className="flex justify-between font-medium text-gray-900">
+                    <span>Total</span>
+                    <span>${calculateTotal().toFixed(2)}</span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Delivery Info */}
+              <div className="bg-background p-4 rounded-md">
+                <div className="flex items-center gap-3 mb-2">
+                  <Package className="w-4 h-4 text-primary" />
+                  <span className="font-medium text-sm text-gray-900">
+                    Free Delivery
+                  </span>
+                </div>
+                <p className="text-xs text-gray-700">
+                  Estimated delivery: 3-5 business days
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default OrderConfirmPage;
