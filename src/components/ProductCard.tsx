@@ -4,6 +4,7 @@ import type { Product, OrderItem } from "../types";
 import { staticProducts } from "../data/staticData";
 import { Heart, ShoppingCart } from "lucide-react";
 import { useCart } from "../contexts/CartContext";
+import { Button } from "./ui/Button";
 
 interface ProductCardProps {
   product: Product;
@@ -79,88 +80,41 @@ export const ProductCard: React.FC<ProductCardProps> = ({
       onRemove(product._id);
     }
   };
-
+  console.log(product);
   return (
-    <div key={product._id} className="flex items-center justify-between gap-10">
-      <div className="flex flex-col gap-1 lg:w-[240px] md:w-[200px] w-[140px] transition-transform duration-300 ease-in">
-        <Link
-          aria-label="View Product"
-          to={`/product-details/${product._id}`}
-          onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
-        >
-          <div className="relative lg:w-[240px] lg:h-[280px] md:w-[200px] md:h-[250px] w-[140px] h-[168px] overflow-hidden">
-            <img
-              loading="lazy"
-              className={`w-full h-full object-cover ${
-                isOutOfStock ? "bg-opacity-50" : ""
-              }`}
-              src={product.image}
-              alt={product.name}
-            />
-            {isOutOfStock && (
-              <>
-                <div className="absolute inset-0 bg-[#D9D9D97D] bg-opacity-10"></div>
-                <div className="flex items-center justify-center">
-                  <p className="absolute top-1/3 mt-4 md:mt-0 md:top-1/2 bg-headerBg w-[80%] text-center py-1 text-gray-900 text-[16px] md:text-[24px] font-baskervville">
-                    Out of Stock
-                  </p>
-                </div>
-              </>
-            )}
-          </div>
-        </Link>
-        <div className="flex justify-between text-[16px] md:text-[19px] lg:text-[22px] font-baskervville font-[200] text-gray-900 text-ellipsis overflow-hidden">
-          <h1 className="line-clamp-1 w-5/6">{product.name}</h1>
+    <div
+      key={product._id}
+      className={`group rounded-3xl flex flex-col lg:min-h-[320px] min-h-[300px]  overflow-hidden bg-white transition-all duration-300 border border-gray-200/50 shadow-sm lg:hover:shadow-md cursor-pointer}`}
+      // onClick={handleCardClick}
+    >
+      {/* Image Section */}
+      <div className={`relative overflow-hidden lg:h-[75%] h-[68%] `}>
+        {/* First Image */}
+        <img
+          src={product.image}
+          alt={product.name}
+          className="w-full object-cover h-full  transition-all duration-500 group-hover:scale-110"
+        />
+      </div>
+      {/* Content Section */}
+      <div className="flex flex-col lg:h-[25%] h-[32%] px-1 py-2 lg:px-3 lg:py-3 justify-between bg-white">
+        {/* Product Info */}
+        <div className="space-y-1">
+          <h3 className="text-[13px] lg:text-[.9rem] font-semibold text-gray-900 line-clamp-2 group-hover:text-gray-800 transition-colors duration-200">
+            {product.name}
+          </h3>
         </div>
-        <div className="flex items-center justify-between text-gray-900 font-[400]">
-          <div className="font-robotoFlex text-[14px] md:text-[19px] lg:text-[20px] gap-1 flex items-center">
-            <span>Rs. {product.price}</span>
-          </div>
-        </div>
-        <div className="flex justify-between w-full lg:text-[18px] md:text-[14px] text-[11px] gap-1 lg:h-9 h-fit">
-          {showQuantity ? (
-            <div className="flex items-center gap-2 lg:w-[82%] w-[80%]">
-              <button
-                onClick={() => handleQuantityChange(Math.max(1, quantity - 1))}
-                className="border border-gray-300 rounded-sm px-3 py-1 hover:bg-gray-100 hover:border-gray-400 transition-all duration-200 text-gray-700 hover:text-gray-900 disabled:opacity-50 disabled:cursor-not-allowed"
-                disabled={quantity <= 1}
-              >
-                -
-              </button>
-              <span className="px-3 py-1 text-center min-w-[2rem] bg-gray-50 border border-gray-200 rounded-sm text-gray-900 font-medium">
-                {quantity}
-              </span>
-              <button
-                onClick={() => handleQuantityChange(quantity + 1)}
-                className="border border-gray-300 rounded-sm px-3 py-1 hover:bg-gray-100 hover:border-gray-400 transition-all duration-200 text-gray-700 hover:text-gray-900"
-              >
-                +
-              </button>
-              <button
-                onClick={handleRemove}
-                className="text-red-600 hover:text-red-800 hover:bg-red-50 text-xs px-2 py-1 rounded-sm transition-all duration-200 font-medium"
-                title="Remove item"
-              >
-                Remove
-              </button>
-            </div>
-          ) : (
-            <CartButton
-              disabled={isOutOfStock}
-              isOutOfStock={isOutOfStock}
-              onClick={handleAddToCart}
-              styles={`lg:w-[82%] w-[80%] text-white rounded-sm py-2 h-full ${
-                isOutOfStock ? "opacity-50 cursor-not-allowed" : ""
-              }`}
-            />
+
+        {/* Category and Price */}
+        <div className="flex items-center justify-between">
+          {product.category && (
+            <p className="text-xs text-gray-500 font-medium">
+              {product.category}
+            </p>
           )}
-          <WishlistButton
-            disabled={isOutOfStock}
-            isOutOfStock={isOutOfStock}
-            styles={`border border-gray-900 rounded-sm lg:px-2.5 px-2 ${
-              isOutOfStock ? "opacity-50 cursor-not-allowed" : ""
-            }`}
-          />
+          <p className="text-[13px] sm:text-sm lg:text-[.9rem] font-semibold text-gray-900 group-hover:text-gray-800 transition-colors duration-200">
+            ₹{product.price}
+          </p>
         </div>
       </div>
     </div>
