@@ -81,6 +81,10 @@ export interface InitiatePaymentResponse {
   initiatePayment: string;
 }
 
+export interface VerifyPaymentAndCreateOrderResponse {
+  verifyPaymentAndCreateOrder: Order;
+}
+
 export interface OrderContextType {
   orders: Order[];
   loading: boolean;
@@ -88,4 +92,8 @@ export interface OrderContextType {
   refetchOrders: () => void;
   createOrder: (input: CreateOrderInput) => Promise<Order | undefined>;
   initiatePayment: (input: CreateOrderInput) => Promise<string | undefined>;
+  verifyPaymentAndCreateOrder: (
+    collect_request_id: string,
+    input: CreateOrderInput
+  ) => Promise<Order | undefined>;
 }

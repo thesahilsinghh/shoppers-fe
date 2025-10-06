@@ -7,12 +7,14 @@ import type {
   GetOrdersResponse,
   CreateOrderResponse,
   InitiatePaymentResponse,
+  VerifyPaymentAndCreateOrderResponse,
 } from "../types";
 import { useMutation, useQuery } from "@apollo/client/react";
 import { GET_ORDERS } from "../grapghql/queries/order.queries";
 import {
   CREATE_ORDER,
   INITIATE_PAYMENT,
+  VERIFY_PAYMENT_AND_CREATE_ORDER,
 } from "../grapghql/mutations/order.mutations";
 
 // GraphQL Response Types
@@ -32,6 +34,10 @@ export const OrderContextProvider: React.FC<{
   const [createOrderMutation] = useMutation<CreateOrderResponse>(CREATE_ORDER);
   const [initiatePaymentMutation] =
     useMutation<InitiatePaymentResponse>(INITIATE_PAYMENT);
+  const [verifyPaymentMutation] =
+    useMutation<VerifyPaymentAndCreateOrderResponse>(
+      VERIFY_PAYMENT_AND_CREATE_ORDER
+    );
 
   if (error) {
     console.log(error);
@@ -75,6 +81,26 @@ export const OrderContextProvider: React.FC<{
     }
   };
 
+  const verifyPaymentAndCreateOrder = async (
+    collect_request_id: string,
+    input: CreateOrderInput
+  ): Promise<Order | undefined> => {
+    try {
+      const { data } = await verifyPaymentMutation({
+        variables: { collect_request_id, input },
+      });
+      if (!data || !data.verifyPaymentAndCreateOrder) {
+        throw new Error("Failed to verify payment and create order.");
+      }
+      // Refetch orders to update the list
+      await refetch();
+      return data.verifyPaymentAndCreateOrder;
+    } catch (err: any) {
+      console.error("Error verifying payment:", err);
+      throw err;
+    }
+  };
+
   return (
     <OrderContext.Provider
       value={{
@@ -84,6 +110,7 @@ export const OrderContextProvider: React.FC<{
         refetchOrders: refetch,
         createOrder,
         initiatePayment,
+        verifyPaymentAndCreateOrder,
       }}
     >
       {children}

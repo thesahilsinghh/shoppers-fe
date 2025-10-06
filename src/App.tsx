@@ -6,6 +6,7 @@ import HomePage from "./pages/HomePage";
 import CheckoutPage from "./pages/CheckoutPage";
 import OrderConfirmPage from "./pages/OrderConfirmPage";
 import OrdersPage from "./pages/OrdersPage";
+import PaymentCallbackPage from "./pages/PaymentCallbackPage";
 import { CartProvider } from "./contexts/CartContext";
 import { OrderContextProvider } from "./contexts/OrderContext";
 import CartPage from "./pages/CartPage";
@@ -30,6 +31,10 @@ function App() {
                   <Route path="/checkout" element={<CheckoutPage />} />
                   <Route path="/order-confirm" element={<OrderConfirmPage />} />
                   <Route path="/orders" element={<OrdersPage />} />
+                  <Route
+                    path="/payment/callback"
+                    element={<PaymentCallbackPage />}
+                  />
                 </Routes>
               </OrderContextProvider>
             }

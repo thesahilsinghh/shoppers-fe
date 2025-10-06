@@ -36,3 +36,45 @@ export const INITIATE_PAYMENT = gql`
     initiatePayment(createOrderInput: $input)
   }
 `;
+
+export const VERIFY_PAYMENT_AND_CREATE_ORDER = gql`
+  mutation VerifyPaymentAndCreateOrder(
+    $collect_request_id: String!
+    $input: CreateOrderInput!
+  ) {
+    verifyPaymentAndCreateOrder(
+      collect_request_id: $collect_request_id
+      createOrderInput: $input
+    ) {
+      _id
+      user_id {
+        _id
+        first_name
+        email
+      }
+      order_id
+      status
+      total
+      createdAt
+      order_items {
+        product_id {
+          _id
+          title
+        }
+        quantity
+        price
+      }
+      address {
+        flat
+        city
+        state
+        pincode
+        country
+        contact
+        name
+      }
+      payment_id
+      shippingPrice
+    }
+  }
+`;

@@ -74,12 +74,22 @@ const OrderConfirmPage: React.FC = () => {
       }
 
       // Convert cart items to order items
+      // const orderItems = cartItems.map((item) => ({
+      //   product_id: item.product._id,
+      //   quantity: item.quantity,
+      //   price: item.product.price,
+      // }));
       const orderItems = [
-        { product_id: "68e1874721e0c07b5de71b7f", quantity: 2, price: 2499 },
-        { product_id: "68e1874721e0c07b5de71b80", quantity: 1, price: 999 },
+        { product_id: "68e1874721e0c07b5de71b7f", quantity: 1, price: 2499 },
       ];
 
-      const order: CreateOrderInput = {
+      if (orderItems.length === 0) {
+        alert("Your cart is empty");
+        setIsProcessing(false);
+        return;
+      }
+
+      const orderInput: CreateOrderInput = {
         user_id: "68e1fbdd138058230eec7c3a",
         order_id: generateOrderId(),
         order_items: orderItems,
@@ -92,23 +102,23 @@ const OrderConfirmPage: React.FC = () => {
           contact: address.contact,
           name: address.name,
         },
-        payment_id: generatePaymentId(),
         shippingPrice: calculateShipping(),
       };
 
-      const paymentUrl = await initiatePayment(order);
+      // Store order data in localStorage for callback page
+      localStorage.setItem("pendingOrder", JSON.stringify(orderInput));
+
+      // Initiate payment and get payment URL
+      const paymentUrl = await initiatePayment(orderInput);
       if (!paymentUrl) {
         throw new Error("Failed to initiate payment");
       }
-      console.log("Redirecting to payment:", paymentUrl);
-      // Step 3: redirect user to payment page
-      window.location.href = paymentUrl || "";
 
-      // setNewOrder(result);
-      // setOrderPlaced(true);
-      // setIsProcessing(false);
-    } catch (error) {
-      console.log(error);
+      // Redirect to payment gateway
+      window.location.href = paymentUrl;
+    } catch (error: any) {
+      console.error("Order placement error:", error);
+      alert(error.message || "Failed to place order. Please try again.");
       setIsProcessing(false);
     }
   };
