@@ -24,7 +24,7 @@ export interface Cart {
 export interface Address {
   flat: string;
   city: string;
-  landmark: string;
+  landmark?: string;
   state: string;
   country: string;
   pincode: string;
@@ -59,5 +59,41 @@ export interface Order {
   shippingPrice: number;
   address: Address;
   createdAt: Date;
-  updatedAt: Date;
+}
+
+export interface CreateOrderInput {
+  user_id: string;
+  order_items: OrderItem[];
+  payment_id?: string;
+  order_id: string;
+  shippingPrice: number;
+  address: Address;
+}
+export interface GetOrdersResponse {
+  orders: Order[];
+}
+
+export interface CreateOrderResponse {
+  createOrder: Order;
+}
+
+export interface InitiatePaymentResponse {
+  initiatePayment: string;
+}
+
+export interface VerifyPaymentAndCreateOrderResponse {
+  verifyPaymentAndCreateOrder: Order;
+}
+
+export interface OrderContextType {
+  orders: Order[];
+  loading: boolean;
+  error: string | null;
+  refetchOrders: () => void;
+  createOrder: (input: CreateOrderInput) => Promise<Order | undefined>;
+  initiatePayment: (input: CreateOrderInput) => Promise<string | undefined>;
+  verifyPaymentAndCreateOrder: (
+    collect_request_id: string,
+    input: CreateOrderInput
+  ) => Promise<Order | undefined>;
 }

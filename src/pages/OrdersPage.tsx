@@ -1,18 +1,14 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
-import { Package, MapPin, CreditCard, Eye } from "lucide-react";
+import { Package, MapPin, CreditCard, Eye, Loader2 } from "lucide-react";
 import type { Order } from "../types";
 import { OrderStatus } from "../types";
-import { getOrdersFromStorage } from "../data/staticData";
 import { OrderItemCard } from "../components/ProductCard";
+import { useOrderContext } from "../contexts/OrderContext";
 
 const OrdersPage: React.FC = () => {
-  const [orders, setOrders] = useState<Order[]>([]);
+  const { orders, loading, error, refetchOrders } = useOrderContext();
   const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
-
-  useEffect(() => {
-    setOrders(getOrdersFromStorage());
-  }, []);
 
   const getStatusColor = (status: OrderStatus) => {
     switch (status) {
@@ -90,6 +86,53 @@ const OrdersPage: React.FC = () => {
     </div>
   );
 
+  // Loading state
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-background">
+        <div className="container mx-auto px-4 py-20">
+          <div className="max-w-2xl mx-auto text-center">
+            <div className="w-16 h-16 bg-muted rounded-full flex items-center justify-center mx-auto mb-6">
+              <Loader2 className="w-8 h-8 text-muted-foreground animate-spin" />
+            </div>
+            <h1 className="text-3xl font-light mb-4 text-gray-900">
+              Loading your orders...
+            </h1>
+            <p className="text-gray-700">
+              Please wait while we fetch your order history
+            </p>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // Error state
+  if (error) {
+    return (
+      <div className="min-h-screen bg-background">
+        <div className="container mx-auto px-4 py-20">
+          <div className="max-w-2xl mx-auto text-center">
+            <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-6">
+              <Package className="w-8 h-8 text-red-600" />
+            </div>
+            <h1 className="text-3xl font-light mb-4 text-gray-900">
+              Error loading orders
+            </h1>
+            <p className="text-gray-700 mb-8">{error}</p>
+            <button
+              onClick={() => refetchOrders()}
+              className="inline-flex items-center px-6 py-3 bg-primary text-primary-foreground rounded-md hover:bg-primary/90 transition-colors"
+            >
+              Try Again
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // No orders state
   if (orders.length === 0) {
     return (
       <div className="min-h-screen bg-background">

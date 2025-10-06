@@ -1,19 +1,25 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { CheckCircle, CreditCard, Package, ArrowLeft } from "lucide-react";
-import type { CartItem, Order, Address } from "../types";
-import { OrderStatus } from "../types";
-import {
-  getCartFromStorage,
-  saveOrderToStorage,
-  getAddressFromStorage,
-  saveAddressToStorage,
-} from "../data/staticData";
+import type { CartItem, Order, Address, CreateOrderInput } from "../types";
+import { getCartFromStorage } from "../data/staticData";
 import { OrderItemCard } from "../components/ProductCard";
+import { Button } from "../components/ui/Button";
+import { useOrderContext } from "../contexts/OrderContext";
 
 const OrderConfirmPage: React.FC = () => {
+  const { createOrder, initiatePayment } = useOrderContext();
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
-  const [address, setAddress] = useState<Address>(getAddressFromStorage());
+  const [address, setAddress] = useState<Address>({
+    name: "name",
+    contact: "+912282882",
+    flat: "flat",
+    city: "new delhi",
+    state: "state",
+    pincode: "11122",
+    country: "India",
+  });
+
   const [isProcessing, setIsProcessing] = useState(false);
   const [orderPlaced, setOrderPlaced] = useState(false);
   const [newOrder, setNewOrder] = useState<Order | null>(null);
@@ -47,47 +53,84 @@ const OrderConfirmPage: React.FC = () => {
     return `pay_${Math.random().toString(36).substr(2, 9)}`;
   };
 
-  const handlePlaceOrder = async () => {
+  const handlePlaceOrder = async (e: any) => {
+    e.preventDefault();
     setIsProcessing(true);
 
-    // Simulate processing delay
-    await new Promise((resolve) => setTimeout(resolve, 2000));
+    try {
+      // Validate address fields
+      if (
+        !address.name ||
+        !address.contact ||
+        !address.flat ||
+        !address.city ||
+        !address.state ||
+        !address.pincode ||
+        !address.country
+      ) {
+        alert("Please fill in all address fields");
+        setIsProcessing(false);
+        return;
+      }
 
-    const orderItems = cartItems.map((item) => ({
-      product_id: item.product._id,
-      quantity: item.quantity,
-      price: item.product.price,
-    }));
+      // Convert cart items to order items
+      // const orderItems = cartItems.map((item) => ({
+      //   product_id: item.product._id,
+      //   quantity: item.quantity,
+      //   price: item.product.price,
+      // }));
+      const orderItems = [
+        { product_id: "68e1874721e0c07b5de71b7f", quantity: 1, price: 2499 },
+      ];
 
-    const order: Order = {
-      _id: Date.now().toString(),
-      user_id: "user123",
-      order_id: generateOrderId(),
-      order_items: orderItems,
-      total: calculateTotal(),
-      status: OrderStatus.CONFIRMED,
-      payment_id: generatePaymentId(),
-      shippingPrice: calculateShipping(),
-      address: address,
-      createdAt: new Date(),
-      updatedAt: new Date(),
-    };
+      if (orderItems.length === 0) {
+        alert("Your cart is empty");
+        setIsProcessing(false);
+        return;
+      }
 
-    saveOrderToStorage(order);
-    setNewOrder(order);
-    setOrderPlaced(true);
-    setIsProcessing(false);
+      const orderInput: CreateOrderInput = {
+        user_id: "68e1fbdd138058230eec7c3a",
+        order_id: generateOrderId(),
+        order_items: orderItems,
+        address: {
+          flat: address.flat,
+          city: address.city,
+          state: address.state,
+          pincode: address.pincode,
+          country: address.country,
+          contact: address.contact,
+          name: address.name,
+        },
+        shippingPrice: calculateShipping(),
+      };
+
+      // Store order data in localStorage for callback page
+      localStorage.setItem("pendingOrder", JSON.stringify(orderInput));
+
+      // Initiate payment and get payment URL
+      const paymentUrl = await initiatePayment(orderInput);
+      if (!paymentUrl) {
+        throw new Error("Failed to initiate payment");
+      }
+
+      // Redirect to payment gateway
+      window.location.href = paymentUrl;
+    } catch (error: any) {
+      console.error("Order placement error:", error);
+      alert(error.message || "Failed to place order. Please try again.");
+      setIsProcessing(false);
+    }
   };
 
   const updateAddressField = (field: keyof Address, value: string) => {
     const updatedAddress = { ...address, [field]: value };
     setAddress(updatedAddress);
-    saveAddressToStorage(updatedAddress);
   };
 
   if (orderPlaced && newOrder) {
     return (
-      <div className="min-h-screen bg-background">
+      <div className="bg-background">
         <div className="container mx-auto px-4 py-20">
           <div className="max-w-2xl mx-auto text-center">
             <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6">
@@ -233,6 +276,21 @@ const OrderConfirmPage: React.FC = () => {
                       className="w-full px-3 py-2 border border-input rounded-md bg-background focus:ring-2 focus:ring-ring focus:border-transparent"
                     />
                   </div>
+
+                  <div>
+                    <label className="block text-sm font-medium mb-1 text-gray-900">
+                      Country
+                    </label>
+                    <input
+                      type="text"
+                      value={address.country || ""}
+                      onChange={(e) =>
+                        updateAddressField("country", e.target.value)
+                      }
+                      className="w-full px-3 py-2 border border-input rounded-md bg-background focus:ring-2 focus:ring-ring focus:border-transparent"
+                      placeholder="e.g., India"
+                    />
+                  </div>
                 </div>
               </div>
 
@@ -256,10 +314,10 @@ const OrderConfirmPage: React.FC = () => {
               </div>
 
               {/* Submit Button */}
-              <button
+              <Button
                 onClick={handlePlaceOrder}
                 disabled={isProcessing}
-                className="w-full inline-flex items-center justify-center px-6 py-3 bg-primary text-primary-foreground rounded-md hover:bg-primary/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                className="w-full inline-flex items-center justify-center px-6 py-3"
               >
                 {isProcessing ? (
                   <div className="flex items-center gap-2">
@@ -272,7 +330,7 @@ const OrderConfirmPage: React.FC = () => {
                     Create Order - ${calculateTotal().toFixed(2)}
                   </div>
                 )}
-              </button>
+              </Button>
             </form>
           </div>
 
