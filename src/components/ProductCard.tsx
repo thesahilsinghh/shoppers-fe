@@ -12,6 +12,7 @@ interface ProductCardProps {
   quantity?: number;
   onQuantityChange?: (productId: string, quantity: number) => void;
   onRemove?: (productId: string) => void;
+  handleClick: () => {};
 }
 
 // Cart button component
@@ -59,6 +60,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
   quantity = 1,
   onQuantityChange,
   onRemove,
+  handleClick,
 }) => {
   const { addToCart } = useCart();
   const isOutOfStock = !product.inStock;
@@ -83,6 +85,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
   console.log(product);
   return (
     <div
+      onClick={handleClick}
       key={product._id}
       className={`group rounded-3xl flex flex-col lg:min-h-[320px] min-h-[300px]  overflow-hidden bg-white transition-all duration-300 border border-gray-200/50 shadow-sm lg:hover:shadow-md cursor-pointer}`}
       // onClick={handleCardClick}
@@ -92,7 +95,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
         {/* First Image */}
         <img
           src={product.image}
-          alt={product.name}
+          alt={product.title}
           className="w-full object-cover h-full  transition-all duration-500 group-hover:scale-110"
         />
       </div>
@@ -101,8 +104,44 @@ export const ProductCard: React.FC<ProductCardProps> = ({
         {/* Product Info */}
         <div className="space-y-1">
           <h3 className="text-[16px] lg:text-[1.1rem] font-semibold text-gray-900 line-clamp-2 group-hover:text-gray-800 transition-colors duration-200">
-            {product.name}
+            {product.title}
           </h3>
+          <p className="text-sm text-gray-500 line-clamp-2">
+            {product.description}
+          </p>
+        </div>
+
+  return (
+    <div key={product._id} className="flex items-center justify-between gap-10">
+      <div className="flex flex-col gap-1 lg:w-[240px] md:w-[200px] w-[140px] transition-transform duration-300 ease-in">
+        <Link
+          aria-label="View Product"
+          to={`/product-details/${product._id}`}
+          onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+        >
+          <div className="relative lg:w-[240px] lg:h-[280px] md:w-[200px] md:h-[250px] w-[140px] h-[168px] overflow-hidden">
+            <img
+              loading="lazy"
+              className={`w-full h-full object-cover ${
+                isOutOfStock ? "bg-opacity-50" : ""
+              }`}
+              src={product.image}
+              alt={product.name}
+            />
+            {isOutOfStock && (
+              <>
+                <div className="absolute inset-0 bg-[#D9D9D97D] bg-opacity-10"></div>
+                <div className="flex items-center justify-center">
+                  <p className="absolute top-1/3 mt-4 md:mt-0 md:top-1/2 bg-headerBg w-[80%] text-center py-1 text-gray-900 text-[16px] md:text-[24px] font-baskervville">
+                    Out of Stock
+                  </p>
+                </div>
+              </>
+            )}
+          </div>
+        </Link>
+        <div className="flex justify-between text-[16px] md:text-[19px] lg:text-[22px] font-baskervville font-[200] text-gray-900 text-ellipsis overflow-hidden">
+          <h1 className="line-clamp-1 w-5/6">{product.name}</h1>
         </div>
 
         {/* Category and Price */}
@@ -139,13 +178,13 @@ export const OrderItemCard: React.FC<OrderItemCardProps> = ({
       <div className="relative w-16 h-16 bg-muted rounded-md overflow-hidden">
         <img
           src={product.image}
-          alt={product.name}
+          alt={product.title}
           className="w-full h-full object-cover"
         />
       </div>
 
       <div className="flex-1">
-        <h4 className="font-medium text-gray-900">{product.name}</h4>
+        <h4 className="font-medium text-gray-900">{product.title}</h4>
         {showProductDetails && (
           <p className="text-sm text-gray-600">{product.category}</p>
         )}
