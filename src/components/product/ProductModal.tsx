@@ -2,6 +2,9 @@ import React,{useEffect} from 'react'
 import { useQuery } from '@apollo/client/react';
 import { gql } from '@apollo/client';
 import axios from 'axios';
+import { useCart } from '../../contexts/CartContext';
+import toast from 'react-hot-toast';
+
 
 const GET_PRODUCT_BY_ID = gql`
 query ProductById($id:String!){
@@ -26,7 +29,7 @@ query ProductById($id:String!){
 const ProductModal = ({ productId, open, setOpen }) => {
     const { data, loading, error } = useQuery(GET_PRODUCT_BY_ID, { variables: { id: productId! } ,skip: !productId,});
 
-    // const {} = useCart()
+    const { fetchCart } = useCart()
     const product = data?.productById;
 
 
@@ -35,20 +38,30 @@ const ProductModal = ({ productId, open, setOpen }) => {
         setOpen(false);
     };
 
-   
+   const apiBase = "http://localhost:3000";
 
-    const handleAddToCart = (productId:string) => {
-        // if (onAddToCart) onAddToCart(productId);
-        // fallback: simple console log
-        // else 
-        // axios.post(`${import.meta.env.VITE_API_URL}/cart`,{
-        //     productId,
-        //     quantity:1
-        // })
-        // .then(res=>console.log(res))
-        // .catch(err=>console.log(err))
-            console.log('Add to cart:', );
-    };
+    const handleAddToCart = async (productId: string) => {
+    try {
+      const token = localStorage.getItem("token");
+      if (!token) {
+        toast.error("You must be logged in to add items");
+        return;
+      }
+
+      const { data } = await axios.post(
+        `${apiBase}/cart`,
+        { productId, quantity: 1 }, 
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+
+      toast.success("Added to cart ");
+      await fetchCart(); 
+      console.log("Cart after adding:", data);
+    } catch (err: any) {
+      console.error("Failed to add to cart:", err.response?.data || err.message);
+      toast.error("Failed to add item");
+    }
+  };
 
     return (
         <div>

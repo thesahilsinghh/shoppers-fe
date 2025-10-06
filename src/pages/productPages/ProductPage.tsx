@@ -77,6 +77,7 @@ export default function ProductPage() {
     // Update URL when filters/sort/page change
     function updateUrl(next: any) {
         const params = new URLSearchParams(Object.fromEntries(searchParams.entries()));
+        console.log("Test work")
 
         // set/remove keys
         if (next.category) params.set('category', next.category);
@@ -97,7 +98,7 @@ export default function ProductPage() {
 
     useEffect(() => {
         updateUrl({ ...filters, sortBy, sortOrder, page });
-    }, [filters, sortBy, sortOrder, page]);
+    }, [filters, sortBy, sortOrder,]);
 
     const { data, loading, error, refetch, fetchMore } = useQuery(GET_PRODUCTS, {
         variables: {
