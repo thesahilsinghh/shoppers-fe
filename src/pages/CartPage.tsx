@@ -54,7 +54,6 @@ const CartPage: React.FC = () => {
                     updateQuantity(item.product._id, item.quantity - 1)
                   }
                   className="btn rounded-full btn-sm"
-                  disabled={item.quantity <= 1}
                 >
                   -
                 </button>
@@ -89,7 +88,7 @@ const CartPage: React.FC = () => {
 
       {items.length > 0 && (
         <div className="mt-6 flex flex-col md:flex-row justify-between items-start gap-4">
-          {/* Left: Clear Cart */}
+
           <button
             onClick={clearCart}
             className="btn btn-error btn-outline rounded-full"
@@ -97,7 +96,6 @@ const CartPage: React.FC = () => {
             Clear Cart
           </button>
 
-          {/* Right: Total and Place Order stacked vertically */}
           <div className="flex flex-col items-center gap-3 w-full md:w-auto">
             <h2 className="text-2xl font-bold">
               Total: ₹{totalPrice.toFixed(2)}

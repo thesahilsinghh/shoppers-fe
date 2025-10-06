@@ -18,6 +18,7 @@ import ProductPage from './pages/productPages/ProductPage';
 // import { Route } from 'lucide-react'
 import { OrderContextProvider } from "./contexts/OrderContext";
 import CartPage from "./pages/CartPage";
+import { Toaster } from 'react-hot-toast';
 
 function App() {
   return (
@@ -25,6 +26,7 @@ function App() {
     <AuthProvider>
     <CartProvider>
     <Header />
+    <Toaster/>
         <Routes>
           <Route path="/signup" element={
             <ProtectedRoute requireAuth={false} redirectTo="/login">

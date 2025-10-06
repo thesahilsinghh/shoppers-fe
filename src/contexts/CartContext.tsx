@@ -1,16 +1,9 @@
 "use client";
 
-import React, {
-  createContext,
-  useContext,
-  useEffect,
-  useState,
-  type ReactNode,
-} from "react";
+import React, { createContext, useContext, useEffect, useState, type ReactNode } from "react";
 import axios from "axios";
 import toast from "react-hot-toast";
 
-// Types
 interface Product {
   _id: string;
   title: string;
@@ -40,58 +33,28 @@ interface CartContextType {
 
 const CartContext = createContext<CartContextType | undefined>(undefined);
 
-const apiBase = "http://localhost:3000"; // adjust to your backend url
+const apiBase = "http://localhost:3000"; 
 
 export const CartProvider: React.FC<{ children: ReactNode }> = ({
   children,
 }) => {
-  // Sample cart data for testing
-  const sampleItems: CartItem[] = [
-    {
-      product: {
-        _id: "1",
-        title: "Wireless Bluetooth Headphones",
-        price: 99.99,
-        image:
-          "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=300&h=300&fit=crop",
-      },
-      quantity: 1,
-    },
-    {
-      product: {
-        _id: "2",
-        title: "Smart Watch Series 8",
-        price: 299.99,
-        image:
-          "https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=300&h=300&fit=crop",
-      },
-      quantity: 2,
-    },
-    {
-      product: {
-        _id: "3",
-        title: "USB-C Charging Cable",
-        price: 19.99,
-        image:
-          "https://images.unsplash.com/photo-1583394838336-acd977736f90?w=300&h=300&fit=crop",
-      },
-      quantity: 3,
-    },
-  ];
 
-  const [items, setItems] = useState<CartItem[]>(sampleItems);
+  const [items, setItems] = useState<CartItem[]>([]);
   const [totalPrice, setTotalPrice] = useState(0);
+  const apiBase = "http://localhost:3000";
+  const api = axios.create({
+      baseURL: apiBase,
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      withCredentials: true,
+    });
+  
 
-  const token =
-    typeof window !== "undefined" ? localStorage.getItem("accessToken") : null;
-
-  // ✅ Fetch cart from API
   const fetchCart = async () => {
-    if (!token) return;
     try {
-      const { data } = await axios.get<CartResponse>(`${apiBase}/cart`, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
+      const { data } = await api.get<CartResponse>(`${apiBase}/cart`);
+      console.log(data);
       setItems(data.items);
       setTotalPrice(data.totalPrice);
     } catch (err) {
@@ -99,16 +62,13 @@ export const CartProvider: React.FC<{ children: ReactNode }> = ({
     }
   };
 
-  // ✅ Update item quantity
   const updateQuantity = async (productId: string, quantity: number) => {
     try {
       if (quantity <= 0) return removeFromCart(productId);
 
-      const { data } = await axios.put<CartResponse>(
+      const { data } = await api.put<CartResponse>(
         `${apiBase}/cart`,
-        { productId, quantity },
-        { headers: { Authorization: `Bearer ${token}` } }
-      );
+        { productId, quantity });
       setItems(data.items);
       setTotalPrice(data.totalPrice);
     } catch {
@@ -116,13 +76,9 @@ export const CartProvider: React.FC<{ children: ReactNode }> = ({
     }
   };
 
-  // ✅ Remove item
   const removeFromCart = async (productId: string) => {
     try {
-      const { data } = await axios.delete<CartResponse>(
-        `${apiBase}/cart/${productId}`,
-        { headers: { Authorization: `Bearer ${token}` } }
-      );
+      const { data } = await api.delete<CartResponse>(`${apiBase}/cart/${productId}`);
       setItems(data.items);
       setTotalPrice(data.totalPrice);
     } catch {
@@ -130,12 +86,9 @@ export const CartProvider: React.FC<{ children: ReactNode }> = ({
     }
   };
 
-  // ✅ Clear cart
   const clearCart = async () => {
     try {
-      await axios.delete(`${apiBase}/cart`, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
+      await api.delete(`${apiBase}/cart`);
       setItems([]);
       setTotalPrice(0);
       toast.success("Cart cleared");
@@ -144,10 +97,10 @@ export const CartProvider: React.FC<{ children: ReactNode }> = ({
     }
   };
 
-  // load cart on app start
   useEffect(() => {
+    console.log('aca');
     fetchCart();
-  }, []);
+  }, [items]);
 
   const totalItems = items.reduce((sum, item) => sum + item.quantity, 0);
 

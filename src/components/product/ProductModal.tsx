@@ -15,8 +15,6 @@ query ProductById($id:String!){
       publish
       quantity
       title
-
-    
     }
 }
 `
@@ -40,8 +38,6 @@ const ProductModal = ({ productId, open, setOpen }) => {
         setOpen(false);
     };
 
-   
-
     const handleAddToCart = async (productId: string) => {
         try {
             // const token = localStorage.getItem("token");
@@ -62,6 +58,7 @@ const ProductModal = ({ productId, open, setOpen }) => {
     };
 
     return (
+        
         <div>
             {open && (
                 <div className="modal modal-open">
