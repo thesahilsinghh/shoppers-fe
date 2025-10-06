@@ -7,8 +7,8 @@ import { Input } from "../components/ui/Input";
 import { Label } from "../components/ui/Label";
 
 const CheckoutPage: React.FC = () => {
-  const { state } = useCart();
-  const cartItems = state.items;
+  const { items } = useCart();
+  const cartItems = items;
   const navigate = useNavigate();
 
   const calculateSubtotal = () => {
@@ -161,7 +161,7 @@ const CheckoutPage: React.FC = () => {
                     </div>
                     <div className="flex-1">
                       <h3 className="font-medium text-sm text-gray-900">
-                        {item.product.name}
+                        {item.product.title}
                       </h3>
                       <p className="text-sm text-gray-900">
                         Qty: {item.quantity}

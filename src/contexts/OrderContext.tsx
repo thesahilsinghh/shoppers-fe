@@ -6,10 +6,14 @@ import type {
   OrderContextType,
   GetOrdersResponse,
   CreateOrderResponse,
+  InitiatePaymentResponse,
 } from "../types";
 import { useMutation, useQuery } from "@apollo/client/react";
 import { GET_ORDERS } from "../grapghql/queries/order.queries";
-import { CREATE_ORDER } from "../grapghql/mutations/order.mutations";
+import {
+  CREATE_ORDER,
+  INITIATE_PAYMENT,
+} from "../grapghql/mutations/order.mutations";
 
 // GraphQL Response Types
 
@@ -26,6 +30,8 @@ export const OrderContextProvider: React.FC<{
     }
   );
   const [createOrderMutation] = useMutation<CreateOrderResponse>(CREATE_ORDER);
+  const [initiatePaymentMutation] =
+    useMutation<InitiatePaymentResponse>(INITIATE_PAYMENT);
 
   if (error) {
     console.log(error);
@@ -53,6 +59,22 @@ export const OrderContextProvider: React.FC<{
     }
   };
 
+  const initiatePayment = async (
+    input: CreateOrderInput
+  ): Promise<string | undefined> => {
+    try {
+      console.log(input);
+      const { data } = await initiatePaymentMutation({ variables: { input } });
+      if (!data || !data.initiatePayment) {
+        throw new Error("Failed to initiate payment. No data returned.");
+      }
+      return data.initiatePayment;
+    } catch (err: any) {
+      console.error("Error initiating payment:", err);
+      throw err;
+    }
+  };
+
   return (
     <OrderContext.Provider
       value={{
@@ -61,6 +83,7 @@ export const OrderContextProvider: React.FC<{
         error: error ? error.message : null,
         refetchOrders: refetch,
         createOrder,
+        initiatePayment,
       }}
     >
       {children}

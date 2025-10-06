@@ -77,10 +77,15 @@ export interface CreateOrderResponse {
   createOrder: Order;
 }
 
+export interface InitiatePaymentResponse {
+  initiatePayment: string;
+}
+
 export interface OrderContextType {
   orders: Order[];
   loading: boolean;
   error: string | null;
   refetchOrders: () => void;
   createOrder: (input: CreateOrderInput) => Promise<Order | undefined>;
+  initiatePayment: (input: CreateOrderInput) => Promise<string | undefined>;
 }

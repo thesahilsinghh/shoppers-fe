@@ -6,11 +6,12 @@ import { useNavigate } from "react-router-dom";
 import { Trash2 } from "lucide-react";
 
 const CartPage: React.FC = () => {
-  const { items, totalPrice, updateQuantity, removeFromCart, clearCart } = useCart();
+  const { items, totalPrice, updateQuantity, removeFromCart, clearCart } =
+    useCart();
   const navigate = useNavigate();
 
   const handlePlaceOrder = () => {
-    navigate("/orders");
+    navigate("/checkout ");
   };
 
   return (
@@ -22,9 +23,14 @@ const CartPage: React.FC = () => {
       ) : (
         <ul className="list bg-gray-100 rounded-box shadow-md divide-y">
           {items.map((item, index) => (
-            <li key={item.product._id} className="flex items-center justify-between p-4 gap-4">
+            <li
+              key={item.product._id}
+              className="flex items-center justify-between p-4 gap-4"
+            >
               <div className="flex items-center gap-4">
-                <div className="text-2xl font-thin opacity-40 tabular-nums">{index + 1}</div>
+                <div className="text-2xl font-thin opacity-40 tabular-nums">
+                  {index + 1}
+                </div>
                 {item.product.image && (
                   <img
                     src={item.product.image}
@@ -33,22 +39,32 @@ const CartPage: React.FC = () => {
                   />
                 )}
                 <div className="flex flex-col">
-                  <span className="font-bold text-2xl">{item.product.title}</span>
-                  <span className="text-lg text-gray-500">₹{item.product.price.toFixed(2)}</span>
+                  <span className="font-bold text-2xl">
+                    {item.product.title}
+                  </span>
+                  <span className="text-lg text-gray-500">
+                    ₹{item.product.price.toFixed(2)}
+                  </span>
                 </div>
               </div>
 
               <div className="flex items-center gap-3">
                 <button
-                  onClick={() => updateQuantity(item.product._id, item.quantity - 1)}
+                  onClick={() =>
+                    updateQuantity(item.product._id, item.quantity - 1)
+                  }
                   className="btn rounded-full btn-sm"
                   disabled={item.quantity <= 1}
                 >
                   -
                 </button>
-                <span className="font-semibold text-gray-700 text-3xl">{item.quantity}</span>
+                <span className="font-semibold text-gray-700 text-3xl">
+                  {item.quantity}
+                </span>
                 <button
-                  onClick={() => updateQuantity(item.product._id, item.quantity + 1)}
+                  onClick={() =>
+                    updateQuantity(item.product._id, item.quantity + 1)
+                  }
                   className="btn rounded-full btn-sm"
                 >
                   +
@@ -56,7 +72,9 @@ const CartPage: React.FC = () => {
               </div>
 
               <div className="flex items-center gap-4">
-                <span className="font-bold text-3xl">₹{(item.product.price * item.quantity).toFixed(2)}</span>
+                <span className="font-bold text-3xl">
+                  ₹{(item.product.price * item.quantity).toFixed(2)}
+                </span>
                 <button
                   onClick={() => removeFromCart(item.product._id)}
                   className="btn btn-ghost btn-square text-red-500 hover:text-red-700"
@@ -81,7 +99,9 @@ const CartPage: React.FC = () => {
 
           {/* Right: Total and Place Order stacked vertically */}
           <div className="flex flex-col items-center gap-3 w-full md:w-auto">
-            <h2 className="text-2xl font-bold">Total: ₹{totalPrice.toFixed(2)}</h2>
+            <h2 className="text-2xl font-bold">
+              Total: ₹{totalPrice.toFixed(2)}
+            </h2>
             <button
               onClick={handlePlaceOrder}
               className="btn btn-accent text-lg rounded-4xl w-32"

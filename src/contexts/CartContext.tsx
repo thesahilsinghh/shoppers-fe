@@ -1,6 +1,12 @@
 "use client";
 
-import React, { createContext, useContext, useEffect, useState, ReactNode } from "react";
+import React, {
+  createContext,
+  useContext,
+  useEffect,
+  useState,
+  ReactNode,
+} from "react";
 import axios from "axios";
 import toast from "react-hot-toast";
 
@@ -36,8 +42,44 @@ const CartContext = createContext<CartContextType | undefined>(undefined);
 
 const apiBase = "http://localhost:3000"; // adjust to your backend url
 
-export const CartProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
-  const [items, setItems] = useState<CartItem[]>([]);
+export const CartProvider: React.FC<{ children: ReactNode }> = ({
+  children,
+}) => {
+  // Sample cart data for testing
+  const sampleItems: CartItem[] = [
+    {
+      product: {
+        _id: "1",
+        title: "Wireless Bluetooth Headphones",
+        price: 99.99,
+        image:
+          "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=300&h=300&fit=crop",
+      },
+      quantity: 1,
+    },
+    {
+      product: {
+        _id: "2",
+        title: "Smart Watch Series 8",
+        price: 299.99,
+        image:
+          "https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=300&h=300&fit=crop",
+      },
+      quantity: 2,
+    },
+    {
+      product: {
+        _id: "3",
+        title: "USB-C Charging Cable",
+        price: 19.99,
+        image:
+          "https://images.unsplash.com/photo-1583394838336-acd977736f90?w=300&h=300&fit=crop",
+      },
+      quantity: 3,
+    },
+  ];
+
+  const [items, setItems] = useState<CartItem[]>(sampleItems);
   const [totalPrice, setTotalPrice] = useState(0);
 
   const token =
@@ -111,7 +153,15 @@ export const CartProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
 
   return (
     <CartContext.Provider
-      value={{ items, totalItems, totalPrice, fetchCart, updateQuantity, removeFromCart, clearCart }}
+      value={{
+        items,
+        totalItems,
+        totalPrice,
+        fetchCart,
+        updateQuantity,
+        removeFromCart,
+        clearCart,
+      }}
     >
       {children}
     </CartContext.Provider>

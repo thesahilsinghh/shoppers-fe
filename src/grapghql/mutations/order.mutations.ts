@@ -30,3 +30,9 @@ export const CREATE_ORDER = gql`
     }
   }
 `;
+
+export const INITIATE_PAYMENT = gql`
+  mutation InitiatePayment($input: CreateOrderInput!) {
+    initiatePayment(createOrderInput: $input)
+  }
+`;

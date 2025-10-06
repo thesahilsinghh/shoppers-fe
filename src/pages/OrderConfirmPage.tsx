@@ -8,7 +8,7 @@ import { Button } from "../components/ui/Button";
 import { useOrderContext } from "../contexts/OrderContext";
 
 const OrderConfirmPage: React.FC = () => {
-  const { createOrder } = useOrderContext();
+  const { createOrder, initiatePayment } = useOrderContext();
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
   const [address, setAddress] = useState<Address>({
     name: "name",
@@ -96,15 +96,17 @@ const OrderConfirmPage: React.FC = () => {
         shippingPrice: calculateShipping(),
       };
 
-      const result = await createOrder(order);
-
-      if (!result) {
-        throw new Error("Failed to create order");
+      const paymentUrl = await initiatePayment(order);
+      if (!paymentUrl) {
+        throw new Error("Failed to initiate payment");
       }
+      console.log("Redirecting to payment:", paymentUrl);
+      // Step 3: redirect user to payment page
+      window.location.href = paymentUrl || "";
 
-      setNewOrder(result);
-      setOrderPlaced(true);
-      setIsProcessing(false);
+      // setNewOrder(result);
+      // setOrderPlaced(true);
+      // setIsProcessing(false);
     } catch (error) {
       console.log(error);
       setIsProcessing(false);

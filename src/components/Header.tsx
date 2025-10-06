@@ -18,7 +18,7 @@ const Header: React.FC = () => {
 
   const navigation = [
     { name: "Home", href: "/" },
-    { name: "Cart", href: "/checkout" },
+    { name: "Cart", href: "/cart" },
     { name: "Orders", href: "/orders" },
   ];
 
@@ -88,7 +88,7 @@ const Header: React.FC = () => {
             </div>
 
             {/* Cart Icon */}
-            <Link to="/checkout">
+            <Link to="/cart">
               <button className="btn btn-ghost btn-sm text-gray-700 hover:text-gray-900 hover:bg-gray-100 transition-all duration-200 relative">
                 <ShoppingBag className="h-5 w-5" />
                 {totalItems > 0 && (
