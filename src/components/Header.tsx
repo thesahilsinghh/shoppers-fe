@@ -16,13 +16,14 @@ const Header: React.FC = () => {
 
   const navigation = [
     { name: "Home", href: "/" },
-    { name: "Cart", href: "/checkout" },
+    { name: "Product", href: "/products" },
+    { name: "Cart", href: "/cart" },
     { name: "Orders", href: "/orders" },
   ];
 
   return (
-    <header className="sticky top-0 z-50 border-b bg-white">
-      <div className="container mx-auto px-4">
+    <header className="sticky w-full top-0 z-50 shadow-sm bg-white">
+      <div className="mx-auto px-4">
         <div className="flex items-center justify-between h-20">
           {/* Mobile menu */}
           <div className="lg:hidden">
@@ -32,7 +33,7 @@ const Header: React.FC = () => {
           </div>
 
           {/* Logo */}
-          <div className="flex-1 lg:relative fixed flex w-full left-0 items-center justify-center lg:justify-start h-full">
+          <div className="flex-1 lg:relative fixed flex w-full left-0 items-center justify-center lg:justify-start">
             <Link to="/" className="flex items-center h-full">
               <div className="flex items-center space-x-2">
                 <div className="w-8 h-8 bg-headerText rounded-md flex items-center justify-center">
@@ -54,13 +55,18 @@ const Header: React.FC = () => {
                   <li key={item.name}>
                     <Link
                       to={item.href}
-                      className={`text-sm font-medium transition-all duration-200 hover:text-gray-900 hover:bg-gray-50 px-3 py-2 rounded-md ${
-                        isActiveRoute
-                          ? "text-gray-900 bg-gray-100"
-                          : "text-gray-600"
+                      className={`text-sm relative font-medium transition-all duration-200 hover:text-gray-900 hover: px-3 py-2 rounded-md ${
+                        isActiveRoute ? "text-gray-900" : "text-gray-600"
                       }`}
                     >
                       {item.name}
+                      <span
+                        className={`absolute left-0 -bottom-1 h-0.5 w-full origin-left scale-x-0 bg-gray-900 transition-transform duration-200 ${
+                          isActiveRoute
+                            ? "scale-x-100"
+                            : "group-hover:scale-x-100"
+                        }`}
+                      />
                     </Link>
                   </li>
                 );
@@ -86,7 +92,7 @@ const Header: React.FC = () => {
             </div>
 
             {/* Cart Icon */}
-            <Link to="/checkout">
+            <Link to="/cart">
               <button className="btn btn-ghost btn-sm text-gray-700 hover:text-gray-900 hover:bg-gray-100 transition-all duration-200 relative">
                 <ShoppingBag className="h-5 w-5" />
                 {totalItems > 0 && (
