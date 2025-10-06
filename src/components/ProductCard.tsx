@@ -97,10 +97,10 @@ export const ProductCard: React.FC<ProductCardProps> = ({
         />
       </div>
       {/* Content Section */}
-      <div className="flex flex-col lg:h-[25%] h-[32%] px-1 py-2 lg:px-3 lg:py-3 justify-between bg-white">
+      <div className="flex flex-col lg:h-[25%] h-[32%] px-1 py-3 lg:px-3 lg:py-3 justify-between bg-white">
         {/* Product Info */}
         <div className="space-y-1">
-          <h3 className="text-[13px] lg:text-[.9rem] font-semibold text-gray-900 line-clamp-2 group-hover:text-gray-800 transition-colors duration-200">
+          <h3 className="text-[16px] lg:text-[1.1rem] font-semibold text-gray-900 line-clamp-2 group-hover:text-gray-800 transition-colors duration-200">
             {product.name}
           </h3>
         </div>
@@ -108,11 +108,11 @@ export const ProductCard: React.FC<ProductCardProps> = ({
         {/* Category and Price */}
         <div className="flex items-center justify-between">
           {product.category && (
-            <p className="text-xs text-gray-500 font-medium">
+            <p className="text-[14px] lg:text-base text-gray-500 font-medium">
               {product.category}
             </p>
           )}
-          <p className="text-[13px] sm:text-sm lg:text-[.9rem] font-semibold text-gray-900 group-hover:text-gray-800 transition-colors duration-200">
+          <p className="text-[16px] lg:text-[1.3rem] font-semibold text-gray-900 group-hover:text-gray-800 transition-colors duration-200">
             ₹{product.price}
           </p>
         </div>

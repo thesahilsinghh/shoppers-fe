@@ -37,19 +37,19 @@ export const Footer = () => {
               Shoppers
             </Link>
             <p className="text-muted-foreground mb-6 max-w-md">
-              Adorable, high-quality clothing for your little ones. Crafted with
-              love, designed for comfort, and made to last.
+              At Shoppers, we believe that every home deserves to be filled with
+              beautiful, quality items that bring joy and comfort.
             </p>
             <div className="flex space-x-4">
               <a
-                href="mailto:cozyberriesofficial@gmail.com"
+                href="mailto:thesahilsinghh@gmail.com"
                 className="text-muted-foreground hover:text-primary transition-colors"
                 aria-label="Email us"
               >
                 <Mail className="h-5 w-5" />
               </a>
               <a
-                href="https://instagram.com/cozy_berries"
+                href="https://instagram.com/the_sahilsinghh"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-muted-foreground hover:text-primary transition-colors"
@@ -58,7 +58,7 @@ export const Footer = () => {
                 <Instagram className="h-5 w-5" />
               </a>
               <a
-                href="https://wa.me/+917411431101"
+                href="https://wa.me/+918860883085"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-muted-foreground hover:text-primary transition-colors"
