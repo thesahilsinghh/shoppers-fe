@@ -1,6 +1,12 @@
 "use client";
 
-import React, { createContext, useContext, useEffect, useState, type ReactNode } from "react";
+import React, {
+  createContext,
+  useContext,
+  useEffect,
+  useState,
+  type ReactNode,
+} from "react";
 import axios from "axios";
 import toast from "react-hot-toast";
 
@@ -33,28 +39,30 @@ interface CartContextType {
 
 const CartContext = createContext<CartContextType | undefined>(undefined);
 
-const apiBase = "http://localhost:3000"; 
+const apiBase = "http://localhost:3000";
 
 export const CartProvider: React.FC<{ children: ReactNode }> = ({
   children,
 }) => {
-
   const [items, setItems] = useState<CartItem[]>([]);
   const [totalPrice, setTotalPrice] = useState(0);
   const apiBase = "http://localhost:3000";
   const api = axios.create({
-      baseURL: apiBase,
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      withCredentials: true,
-    });
-  
+    baseURL: apiBase,
+    headers: {
+      "Content-Type": "application/json",
+    },
+    withCredentials: true,
+  });
+
+  useEffect(() => {
+    return fetchCart();
+  }, []);
 
   const fetchCart = async () => {
     try {
       const { data } = await api.get<CartResponse>(`${apiBase}/cart`);
-      console.log(data);
+
       setItems(data.items);
       setTotalPrice(data.totalPrice);
     } catch (err) {
@@ -66,9 +74,10 @@ export const CartProvider: React.FC<{ children: ReactNode }> = ({
     try {
       if (quantity <= 0) return removeFromCart(productId);
 
-      const { data } = await api.put<CartResponse>(
-        `${apiBase}/cart`,
-        { productId, quantity });
+      const { data } = await api.put<CartResponse>(`${apiBase}/cart`, {
+        productId,
+        quantity,
+      });
       setItems(data.items);
       setTotalPrice(data.totalPrice);
     } catch {
@@ -78,7 +87,9 @@ export const CartProvider: React.FC<{ children: ReactNode }> = ({
 
   const removeFromCart = async (productId: string) => {
     try {
-      const { data } = await api.delete<CartResponse>(`${apiBase}/cart/${productId}`);
+      const { data } = await api.delete<CartResponse>(
+        `${apiBase}/cart/${productId}`
+      );
       setItems(data.items);
       setTotalPrice(data.totalPrice);
     } catch {
@@ -96,11 +107,6 @@ export const CartProvider: React.FC<{ children: ReactNode }> = ({
       toast.error("Failed to clear cart");
     }
   };
-
-  useEffect(() => {
-    console.log('aca');
-    fetchCart();
-  }, [items]);
 
   const totalItems = items.reduce((sum, item) => sum + item.quantity, 0);
 
