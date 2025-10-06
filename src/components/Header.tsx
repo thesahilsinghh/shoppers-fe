@@ -18,12 +18,13 @@ const Header: React.FC = () => {
 
   const navigation = [
     { name: "Home", href: "/" },
+    { name: "Product", href: "/products" },
     { name: "Cart", href: "/cart" },
     { name: "Orders", href: "/orders" },
   ];
 
   return (
-    <header className="sticky w-full top-0 z-50 shadow-sm text-hello">
+    <header className="sticky w-full top-0 z-50 shadow-sm bg-white">
       <div className="mx-auto px-4">
         <div className="flex items-center justify-between h-20">
           {/* Mobile menu */}
@@ -56,13 +57,18 @@ const Header: React.FC = () => {
                   <li key={item.name}>
                     <Link
                       to={item.href}
-                      className={`text-sm font-medium transition-all duration-200 hover:text-gray-900 hover:bg-gray-50 px-3 py-2 rounded-md ${
-                        isActiveRoute
-                          ? "text-gray-900 bg-gray-100"
-                          : "text-gray-600"
+                      className={`text-sm relative font-medium transition-all duration-200 hover:text-gray-900 hover: px-3 py-2 rounded-md ${
+                        isActiveRoute ? "text-gray-900" : "text-gray-600"
                       }`}
                     >
                       {item.name}
+                      <span
+                        className={`absolute left-0 -bottom-1 h-0.5 w-full origin-left scale-x-0 bg-gray-900 transition-transform duration-200 ${
+                          isActiveRoute
+                            ? "scale-x-100"
+                            : "group-hover:scale-x-100"
+                        }`}
+                      />
                     </Link>
                   </li>
                 );
