@@ -5,7 +5,7 @@ import React, {
   useContext,
   useEffect,
   useState,
-  ReactNode,
+  type ReactNode,
 } from "react";
 import axios from "axios";
 import toast from "react-hot-toast";
