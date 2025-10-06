@@ -35,3 +35,8 @@ body {
   -webkit-box-orient: vertical;
   -webkit-line-clamp: 2;
 }
+
+html, body {
+  margin: 0;
+  padding: 0;
+}

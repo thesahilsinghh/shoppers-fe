@@ -8,10 +8,11 @@ import { Edit2, Save, X, User, Mail, Phone, MapPin, Shield } from 'lucide-react'
 import { useMutation } from '@apollo/client/react';
 import toast, { Toaster } from 'react-hot-toast';
 import { UpdateUser } from '../grapghql/mutations/Login.mutation';
+import DashboardHeader from '../components/DashboardHeader';
 
 
 export const UserSettings: React.FC = () => {
-  const { user, loading, refreshUser  } = useAuth();
+  const { user, loading, refreshUser,logout  } = useAuth();
   const [isEditing, setIsEditing] = useState(false);
   const [formData, setFormData] = useState({
     first_name: user?.first_name || '',
@@ -70,6 +71,7 @@ export const UserSettings: React.FC = () => {
 
   return (
     <>
+    <DashboardHeader user={user} />
     <Toaster
       position="top-right"
       toastOptions={{
@@ -93,6 +95,7 @@ export const UserSettings: React.FC = () => {
         },
       }}
     />
+    
       <div className="min-h-screen bg-white py-8 px-4 sm:px-6 lg:px-8">
         <div className="max-w-4xl mx-auto">
           {/* Header */}

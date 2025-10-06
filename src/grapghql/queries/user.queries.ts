@@ -16,3 +16,18 @@ export const GetMe_Q= gql`
     }
   }
 `;
+
+export const GET_PRODUCTS_QUERY = gql`
+   query GetAllProducts($filters: FilterProducts!) {
+    allProducts(filters: $filters) {
+      _id
+      title
+      category
+      price
+      quantity
+      publish
+      description
+      image
+    }
+  }
+`;
