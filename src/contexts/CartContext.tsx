@@ -4,7 +4,6 @@ import React, { createContext, useContext, useEffect, useState, type ReactNode }
 import axios from "axios";
 import toast from "react-hot-toast";
 
-// Types
 interface Product {
   _id: string;
   title: string;
@@ -43,7 +42,9 @@ export const CartProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   const token =
     typeof window !== "undefined" ? localStorage.getItem("token") : null;
 
-  // ✅ Fetch cart from API
+  
+  
+
   const fetchCart = async () => {
     if (!token) return;
     try {
@@ -57,7 +58,6 @@ export const CartProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     }
   };
 
-  // ✅ Update item quantity
   const updateQuantity = async (productId: string, quantity: number) => {
     try {
       if (quantity <= 0) return removeFromCart(productId);
@@ -74,7 +74,6 @@ export const CartProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     }
   };
 
-  // ✅ Remove item
   const removeFromCart = async (productId: string) => {
     try {
       const { data } = await axios.delete<CartResponse>(
@@ -88,7 +87,6 @@ export const CartProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     }
   };
 
-  // ✅ Clear cart
   const clearCart = async () => {
     try {
       await axios.delete(`${apiBase}/cart`, {
@@ -102,7 +100,6 @@ export const CartProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     }
   };
 
-  // load cart on app start
   useEffect(() => {
     fetchCart();
   }, []);
