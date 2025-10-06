@@ -1,6 +1,6 @@
 "use client";
 
-import React, { createContext, useContext, useEffect, useState, ReactNode } from "react";
+import React, { createContext, useContext, useEffect, useState, type ReactNode } from "react";
 import axios from "axios";
 import toast from "react-hot-toast";
 
@@ -34,14 +34,14 @@ interface CartContextType {
 
 const CartContext = createContext<CartContextType | undefined>(undefined);
 
-const apiBase = "http://localhost:3000"; // adjust to your backend url
+const apiBase = "http://localhost:3000"; 
 
 export const CartProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const [items, setItems] = useState<CartItem[]>([]);
   const [totalPrice, setTotalPrice] = useState(0);
 
   const token =
-    typeof window !== "undefined" ? localStorage.getItem("accessToken") : null;
+    typeof window !== "undefined" ? localStorage.getItem("token") : null;
 
   // ✅ Fetch cart from API
   const fetchCart = async () => {

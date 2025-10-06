@@ -5,12 +5,10 @@ import { useCart } from "../contexts/CartContext";
 
 const Header: React.FC = () => {
   const location = useLocation();
-  const { totalItems, fetchCart } = useCart(); // ✅ now using fetchCart from context
-
-  // ✅ Make sure the header badge refreshes when page loads
+  const { totalItems, fetchCart } = useCart(); 
   useEffect(() => {
     fetchCart();
-  }, [fetchCart]);
+  }, []);
 
   const isActive = (path: string) => {
     return location.pathname === path;
