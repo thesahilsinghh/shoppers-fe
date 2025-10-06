@@ -6,10 +6,11 @@ import { getCartFromStorage } from "../data/staticData";
 import { OrderItemCard } from "../components/ProductCard";
 import { Button } from "../components/ui/Button";
 import { useOrderContext } from "../contexts/OrderContext";
+import { useCart } from "../contexts/CartContext";
 
 const OrderConfirmPage: React.FC = () => {
   const { createOrder, initiatePayment } = useOrderContext();
-  const [cartItems, setCartItems] = useState<CartItem[]>([]);
+  const { items } = useCart();
   const [address, setAddress] = useState<Address>({
     name: "name",
     contact: "+912282882",
@@ -24,12 +25,8 @@ const OrderConfirmPage: React.FC = () => {
   const [orderPlaced, setOrderPlaced] = useState(false);
   const [newOrder, setNewOrder] = useState<Order | null>(null);
 
-  useEffect(() => {
-    setCartItems(getCartFromStorage());
-  }, []);
-
   const calculateSubtotal = () => {
-    return cartItems.reduce(
+    return items.reduce(
       (total, item) => total + item.product.price * item.quantity,
       0
     );
@@ -79,10 +76,13 @@ const OrderConfirmPage: React.FC = () => {
       //   quantity: item.quantity,
       //   price: item.product.price,
       // }));
-      const orderItems = [
-        { product_id: "68e1874721e0c07b5de71b7f", quantity: 1, price: 2499 },
-      ];
-
+      // console.log(items);
+      const orderItems = items.map((item) => ({
+        product_id: item.product._id,
+        quantity: item.quantity,
+        price: item.product.price,
+      }));
+      console.log(orderItems);
       if (orderItems.length === 0) {
         alert("Your cart is empty");
         setIsProcessing(false);
@@ -90,7 +90,6 @@ const OrderConfirmPage: React.FC = () => {
       }
 
       const orderInput: CreateOrderInput = {
-        user_id: "68e1fbdd138058230eec7c3a",
         order_id: generateOrderId(),
         order_items: orderItems,
         address: {
@@ -300,7 +299,7 @@ const OrderConfirmPage: React.FC = () => {
                   Order Items
                 </h2>
                 <div className="space-y-4">
-                  {cartItems.map((item) => (
+                  {items.map((item) => (
                     <OrderItemCard
                       key={item.product._id}
                       orderItem={{

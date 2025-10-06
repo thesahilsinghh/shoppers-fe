@@ -28,7 +28,7 @@ export const OrderContextProvider: React.FC<{
   const { data, loading, error, refetch } = useQuery<GetOrdersResponse>(
     GET_ORDERS,
     {
-      variables: { user_id: "68e1fbdd138058230eec7c3a", limit: 10 },
+      variables: { limit: 10 },
     }
   );
   const [createOrderMutation] = useMutation<CreateOrderResponse>(CREATE_ORDER);

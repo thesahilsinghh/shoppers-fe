@@ -62,7 +62,6 @@ export interface Order {
 }
 
 export interface CreateOrderInput {
-  user_id: string;
   order_items: OrderItem[];
   payment_id?: string;
   order_id: string;

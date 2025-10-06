@@ -1,7 +1,8 @@
-import React, { useEffect } from "react";
 import { useQuery } from "@apollo/client/react";
 import { gql } from "@apollo/client";
 import axios from "axios";
+import toast from "react-hot-toast";
+import { useCart } from "../../contexts/CartContext";
 
 const GET_PRODUCT_BY_ID = gql`
   query ProductById($id: String!) {
@@ -23,8 +24,15 @@ const ProductModal = ({ productId, open, setOpen }) => {
     variables: { id: productId! },
     skip: !productId,
   });
-
-  // const {} = useCart()
+  const apiBase = "http://localhost:3000";
+  const api = axios.create({
+    baseURL: apiBase,
+    headers: {
+      "Content-Type": "application/json",
+    },
+    withCredentials: true,
+  });
+  const { fetchCart } = useCart();
   const product = data?.productById;
 
   const handleClose = () => {
@@ -32,17 +40,29 @@ const ProductModal = ({ productId, open, setOpen }) => {
     setOpen(false);
   };
 
-  const handleAddToCart = (productId: string) => {
-    // if (onAddToCart) onAddToCart(productId);
-    // fallback: simple console log
-    // else
-    // axios.post(`${import.meta.env.VITE_API_URL}/cart`,{
-    //     productId,
-    //     quantity:1
-    // })
-    // .then(res=>console.log(res))
-    // .catch(err=>console.log(err))
-    console.log("Add to cart:");
+  const handleAddToCart = async (productId: string) => {
+    try {
+      // const token = localStorage.getItem("token");
+      // if (!token) {
+      //     toast.error("You must be logged in to add items");
+      //     return;
+      // }
+
+      const { data } = await api.post(`${apiBase}/cart`, {
+        productId,
+        quantity: 1,
+      });
+
+      toast.success("Added to cart ");
+      fetchCart();
+      console.log("Cart after adding:", data);
+    } catch (err: any) {
+      console.error(
+        "Failed to add to cart:",
+        err.response?.data || err.message
+      );
+      toast.error("Failed to add item");
+    }
   };
 
   return (
@@ -70,7 +90,7 @@ const ProductModal = ({ productId, open, setOpen }) => {
                 Failed to load product
               </div>
             ) : (
-              <div className="mt-4  grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div className="mt-4 grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div className="md:col-span-1 flex items-center justify-center">
                   {product?.image ? (
                     <img
