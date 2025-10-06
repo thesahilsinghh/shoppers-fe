@@ -1,6 +1,4 @@
 import { Routes, Route } from "react-router-dom";
-import Login from "./pages/authPages/Login";
-import Signup from "./pages/authPages/Signup";
 import Header from "./components/Header";
 import HomePage from "./pages/HomePage";
 import CheckoutPage from "./pages/CheckoutPage";
@@ -10,9 +8,16 @@ import PaymentCallbackPage from "./pages/PaymentCallbackPage";
 import { CartProvider } from "./contexts/CartContext";
 import { OrderContextProvider } from "./contexts/OrderContext";
 import CartPage from "./pages/CartPage";
+import { Login } from "./pages/authPages/Login";
+import { Signup } from "./pages/authPages/Signup";
+import { AuthProvider } from "./contexts/AuthContext";
+import { ProtectedRoute } from "./components/ProtectedRoute";
+import { Dashboard } from "./pages/Dashboard";
+import { UserSettings } from "./pages/UserSettingsPage";
 
 function App() {
   return (
+    <AuthProvider>
     <CartProvider>
       <div className="min-h-screen items-center justify-center bg-base-200 relative">
         <Header />
@@ -22,6 +27,7 @@ function App() {
           <Route path="/login" element={<Login />} />
           <Route path="/" element={<HomePage />} />
           <Route path="/cart" element={<CartPage />} />
+
           {/* Order-related Routes (with context) */}
           <Route
             path="/*"
@@ -39,9 +45,22 @@ function App() {
               </OrderContextProvider>
             }
           />
+
+          {/* Admin Dashboard Routes (with context) */}
+          <Route path="/dashboard" element={
+            <ProtectedRoute requireAuth={true} redirectTo="/login" role="admin">
+              <Dashboard />
+            </ProtectedRoute>
+          } />
+          <Route path="/settings" element={
+            <ProtectedRoute requireAuth={true} redirectTo="/login" role="admin">
+              <UserSettings />
+            </ProtectedRoute>
+          } />
         </Routes>
       </div>
     </CartProvider>
+    </AuthProvider>
   );
 }
 

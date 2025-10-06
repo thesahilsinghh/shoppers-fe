@@ -95,7 +95,7 @@ export const CartProvider: React.FC<{ children: ReactNode }> = ({
       setItems(data.items);
       setTotalPrice(data.totalPrice);
     } catch (err) {
-      toast.error("Failed to fetch cart");
+      console.log(err);
     }
   };
 
