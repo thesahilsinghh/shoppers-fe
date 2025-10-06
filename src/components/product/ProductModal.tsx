@@ -1,6 +1,7 @@
-import React from 'react'
+import React,{useEffect} from 'react'
 import { useQuery } from '@apollo/client/react';
 import { gql } from '@apollo/client';
+import axios from 'axios';
 
 const GET_PRODUCT_BY_ID = gql`
 query ProductById($id:String!){
@@ -20,10 +21,12 @@ query ProductById($id:String!){
 `
 
 
+
+
 const ProductModal = ({ productId, open, setOpen }) => {
     const { data, loading, error } = useQuery(GET_PRODUCT_BY_ID, { variables: { id: productId! } ,skip: !productId,});
 
-
+    // const {} = useCart()
     const product = data?.productById;
 
 
@@ -32,12 +35,19 @@ const ProductModal = ({ productId, open, setOpen }) => {
         setOpen(false);
     };
 
+   
 
-    const handleAddToCart = () => {
+    const handleAddToCart = (productId:string) => {
         // if (onAddToCart) onAddToCart(productId);
         // fallback: simple console log
         // else 
-            console.log('Add to cart:', productId);
+        // axios.post(`${import.meta.env.VITE_API_URL}/cart`,{
+        //     productId,
+        //     quantity:1
+        // })
+        // .then(res=>console.log(res))
+        // .catch(err=>console.log(err))
+            console.log('Add to cart:', );
     };
 
     return (
@@ -85,7 +95,7 @@ const ProductModal = ({ productId, open, setOpen }) => {
 
                         <div className="modal-action justify-between">
                             <button className="btn" onClick={handleClose}>Close</button>
-                            <button className="btn btn-primary" onClick={handleAddToCart} disabled={loading || !product}>Add to cart</button>
+                            <button className="btn btn-primary" onClick={()=>handleAddToCart(productId)} disabled={loading || !product}>Add to cart</button>
                         </div>
                     </div>
                 </div>

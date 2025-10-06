@@ -7,7 +7,6 @@ import { ProductCard } from "../components/ProductCard";
 const HomePage: React.FC = () => {
   return (
     <div className="flex flex-col">
-      {/* Hero Section */}
       <section className="relative py-20 lg:py-32 bg-background">
         <div className="container mx-auto px-4">
           <div className="max-w-4xl mx-auto text-center">
@@ -20,7 +19,7 @@ const HomePage: React.FC = () => {
               items crafted with care for modern living.
             </p>
             <Link
-              to="/checkout"
+              to="/products"
               className="inline-flex items-center px-8 py-3 bg-primary text-primary-foreground rounded-md hover:bg-primary/90 transition-colors"
             >
               Start Shopping

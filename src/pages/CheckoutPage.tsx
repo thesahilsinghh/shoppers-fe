@@ -1,5 +1,5 @@
 import React from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { ArrowLeft, Check, Shield, Truck } from "lucide-react";
 import { useCart } from "../contexts/CartContext";
 import { Button } from "../components/ui/Button";
@@ -7,8 +7,9 @@ import { Input } from "../components/ui/Input";
 import { Label } from "../components/ui/Label";
 
 const CheckoutPage: React.FC = () => {
-  const { state } = useCart();
-  const cartItems = state.items;
+  const { items } = useCart();
+  const cartItems = items;
+  const navigate = useNavigate();
 
   const calculateSubtotal = () => {
     return cartItems.reduce(
@@ -24,6 +25,10 @@ const CheckoutPage: React.FC = () => {
 
   const calculateTotal = () => {
     return calculateSubtotal() + calculateShipping();
+  };
+  const handleSubmit = (e: any) => {
+    e.preventDefault();
+    navigate("/order-confirm");
   };
 
   if (cartItems.length === 0) {
@@ -120,7 +125,12 @@ const CheckoutPage: React.FC = () => {
               </div>
 
               {/* Submit Button */}
-              <Button type="submit" className="w-full" size="lg">
+              <Button
+                onClick={handleSubmit}
+                type="submit"
+                className="w-full"
+                size="lg"
+              >
                 <div className="flex items-center gap-2">
                   <Check className="w-4 h-4" />
                   Create Order - ${calculateTotal().toFixed(2)}
@@ -151,7 +161,7 @@ const CheckoutPage: React.FC = () => {
                     </div>
                     <div className="flex-1">
                       <h3 className="font-medium text-sm text-gray-900">
-                        {item.product.name}
+                        {item.product.title}
                       </h3>
                       <p className="text-sm text-gray-900">
                         Qty: {item.quantity}
