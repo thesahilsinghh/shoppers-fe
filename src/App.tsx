@@ -8,6 +8,7 @@ import OrderConfirmPage from "./pages/OrderConfirmPage";
 import OrdersPage from "./pages/OrdersPage";
 import { CartProvider } from "./contexts/CartContext";
 import { OrderContextProvider } from "./contexts/OrderContext";
+import CartPage from "./pages/CartPage";
 
 function App() {
   return (
@@ -19,7 +20,7 @@ function App() {
           <Route path="/signup" element={<Signup />} />
           <Route path="/login" element={<Login />} />
           <Route path="/" element={<HomePage />} />
-
+          <Route path="/cart" element={<CartPage />} />
           {/* Order-related Routes (with context) */}
           <Route
             path="/*"

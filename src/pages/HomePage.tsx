@@ -7,7 +7,6 @@ import { ProductCard } from "../components/ProductCard";
 const HomePage: React.FC = () => {
   return (
     <div className="flex flex-col">
-      {/* Hero Section */}
       <section className="relative py-20 lg:py-32 bg-background">
         <div className="container mx-auto px-4">
           <div className="max-w-4xl mx-auto text-center">
