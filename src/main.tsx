@@ -2,19 +2,35 @@ import { createRoot } from 'react-dom/client'
 import './index.css'
 import App from './App.tsx'
 import { BrowserRouter } from 'react-router-dom'
-import { ApolloProvider } from '@apollo/client/react'
-import { ApolloClient,HttpLink,InMemoryCache,gql } from '@apollo/client'
+import { ErrorLink } from "@apollo/client/link/error";
+import {
+  ApolloClient,
+  InMemoryCache,
+  HttpLink,
+  from,
+} from '@apollo/client';
+import { ApolloProvider } from '@apollo/client/react';
+import {
+  CombinedGraphQLErrors,
+  CombinedProtocolErrors,
+} from "@apollo/client/errors";
 
-// const client = new ApolloClient({
-//   uri:"http://localhost:3000/graphql/",
-//   cache:new InMemoryCachen(),
-//   credintials:"includes"
-// })
 
+const httpLink = new HttpLink({
+  uri: 'http://localhost:3000/graphql',
+  credentials: 'include',
+  headers: {
+    'Content-Type': 'application/json',
+  },
+});
+const client = new ApolloClient({
+  cache: new InMemoryCache(),
+  link: httpLink
+});
 createRoot(document.getElementById('root')!).render(
   <BrowserRouter>
-    {/* <ApolloProvider> */}
+    <ApolloProvider client={client}>
       <App />
-    {/* </ApolloProvider> */}
+    </ApolloProvider>
   </BrowserRouter>,
 )
