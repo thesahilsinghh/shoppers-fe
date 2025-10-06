@@ -19,7 +19,7 @@ const HomePage: React.FC = () => {
               items crafted with care for modern living.
             </p>
             <Link
-              to="/checkout"
+              to="/products"
               className="inline-flex items-center px-8 py-3 bg-primary text-primary-foreground rounded-md hover:bg-primary/90 transition-colors"
             >
               Start Shopping

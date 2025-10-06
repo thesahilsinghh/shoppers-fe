@@ -6,6 +6,9 @@ import OrderConfirmPage from "./pages/OrderConfirmPage";
 import OrdersPage from "./pages/OrdersPage";
 import PaymentCallbackPage from "./pages/PaymentCallbackPage";
 import { CartProvider } from "./contexts/CartContext";
+// import ProductPage from './pages/productPages/TestPag';
+import ProductPage from './pages/productPages/ProductPage';
+// import { Route } from 'lucide-react'
 import { OrderContextProvider } from "./contexts/OrderContext";
 import CartPage from "./pages/CartPage";
 import { Login } from "./pages/authPages/Login";
@@ -26,6 +29,7 @@ function App() {
           <Route path="/signup" element={<Signup />} />
           <Route path="/login" element={<Login />} />
           <Route path="/" element={<HomePage />} />
+          <Route path="/products" element={<ProductPage/> } />
           <Route path="/cart" element={<CartPage />} />
 
           {/* Order-related Routes (with context) */}
