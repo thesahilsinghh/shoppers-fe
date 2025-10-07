@@ -188,9 +188,12 @@ export default function ProductPage() {
       <input id="products-drawer" type="checkbox" className="drawer-toggle" />
       <div className="drawer-content p-4">
         {/* Top bar: toggle drawer on mobile + title + sort dropdown */}
-        <div className="flex items-center justify-between mb-4 ">
+        <div className="flex items-center justify-between my-14 px-7">
           <div className="flex items-center gap-3 ">
-            <label htmlFor="products-drawer" className="btn btn-ghost ">
+            <label
+              htmlFor="products-drawer"
+              className="btn btn-ghost text-white bg-gray-900"
+            >
               Filters
             </label>
             <h2 className="text-xl font-semibold">Products</h2>
@@ -199,7 +202,7 @@ export default function ProductPage() {
           <div className="flex items-center gap-3">
             <div className="form-control">
               <select
-                className="select select-bordered select-sm"
+                className="select select-bordered select-sm text-white bg-gray-900"
                 value={`${sortBy}:${sortOrder}`}
                 onChange={(e) => {
                   const [by, order] = e.target.value.split(":");
@@ -236,7 +239,7 @@ export default function ProductPage() {
         ) : error ? (
           <div className="alert alert-error">Error loading products</div>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10 px-10 mt-10">
             {items.map((p) => (
               <ProductCard
                 key={p._id}
