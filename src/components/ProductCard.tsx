@@ -84,6 +84,12 @@ export const ProductCard: React.FC<ProductCardProps> = ({
             {product.description}
           </p>
         </div>
+        <div className="flex justify-between">
+          <span className="text-sm font-normal text-gray-900">
+            {product.category}
+          </span>
+          <span className="font-semibold text-gray-900">${product.price}</span>
+        </div>
       </div>
     </div>
   );

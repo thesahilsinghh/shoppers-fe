@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Star, Truck, Shield, ArrowRight } from "lucide-react";
 import { staticProducts } from "../data/staticData";
@@ -6,9 +6,35 @@ import { ProductCard } from "../components/ProductCard";
 import { Hero } from "../components/section/Hero";
 import { Button } from "../components/ui/Button";
 import { Footer } from "../components/Footer";
+import { useQuery } from "@apollo/client/react";
+import { gql } from "@apollo/client";
+const GET_PRODUCTS = gql`
+  query AllProducts($filters: FilterProducts) {
+    allProducts(filters: $filters) {
+      _id
+      category
+      description
+      image
+      price
+      publish
+      quantity
+      title
+    }
+  }
+`;
 
 const HomePage: React.FC = () => {
   const navigate = useNavigate();
+  const { data, loading, error, refetch, fetchMore } = useQuery(GET_PRODUCTS, {
+    variables: {},
+  });
+  const [items, setItems] = useState([]);
+
+  useEffect(() => {
+    if (data && data?.allProducts) {
+      setItems(data.allProducts);
+    }
+  }, [data]);
   return (
     <div className="flex flex-col">
       <Hero />
@@ -24,14 +50,14 @@ const HomePage: React.FC = () => {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {staticProducts.slice(0, 3).map((product) => (
+            {items.slice(0, 3).map((product) => (
               <ProductCard key={product._id} product={product} />
             ))}
           </div>
 
           <div className="w-full flex">
             <Button
-              onClick={() => navigate("/")}
+              onClick={() => navigate("/products")}
               className="text-center mt-12 mx-auto"
             >
               View All Products
